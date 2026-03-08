@@ -1,0 +1,14 @@
+title: "[Show & Tell] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Share how you're using sentrik! Screenshots, configs, CI setups — we want to see it.
+  - type: textarea
+    id: description
+    attributes:
+      label: What did you build?
+      description: Share your setup, integration, or workflow.
+    validations:
+      required: true

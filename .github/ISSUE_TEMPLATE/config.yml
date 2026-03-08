@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or Help
+    url: https://github.com/maxgerhardson/sentrik-community/discussions/new?category=q-a
+    about: Ask questions in Discussions instead of opening an issue.
+  - name: Feature Request
+    url: https://github.com/maxgerhardson/sentrik-community/discussions/new?category=feature-request
+    about: Suggest features in Discussions.
+  - name: Documentation
+    url: https://maxgerhardson.github.io/sentrik-docs
+    about: Check the docs for setup, configuration, and API reference.

@@ -1,0 +1,19 @@
+title: "[Feature] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We love hearing ideas! Describe what you'd like and why it matters.
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature description
+      description: What would you like sentrik to do?
+    validations:
+      required: true
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: How would this help your workflow?
