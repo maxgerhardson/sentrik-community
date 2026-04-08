@@ -1,0 +1,29 @@
+# Sentrik config for web applications
+# Free tier — no license key required
+#
+# Covers: OWASP Top 10, supply chain security
+# Good for: SaaS apps, APIs, web services
+
+standards_packs:
+  - owasp-top-10
+  - supply-chain-security
+
+gate:
+  fail_on:
+    - critical
+    - high
+
+# Scan Python and JavaScript files
+file_patterns:
+  - "**/*.py"
+  - "**/*.js"
+  - "**/*.ts"
+  - "**/*.jsx"
+  - "**/*.tsx"
+
+exclude_patterns:
+  - "node_modules/**"
+  - "venv/**"
+  - ".venv/**"
+  - "dist/**"
+  - "build/**"

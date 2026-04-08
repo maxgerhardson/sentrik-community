@@ -1,0 +1,26 @@
+# Sentrik config for healthcare / medical device software
+# Requires: Team license ($29/mo)
+#
+# Covers: HIPAA, FDA IEC 62304, OWASP, supply chain
+# Good for: EHR systems, medical device firmware, health IT
+
+standards_packs:
+  - owasp-top-10
+  - hipaa
+  - fda-iec-62304
+  - supply-chain-security
+
+gate:
+  fail_on:
+    - critical
+    - high
+    - medium  # Stricter for regulated industry
+
+governance:
+  profile: strict
+  human_review_required:
+    on_critical_finding: true
+    on_requirement_change: true
+  audit:
+    enabled: true
+    log_file: out/agent_audit.jsonl

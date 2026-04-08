@@ -1,0 +1,21 @@
+# Sentrik config for fintech / payment processing
+# Requires: Team license ($29/mo)
+#
+# Covers: PCI-DSS, SOC 2, OWASP, supply chain
+# Good for: Payment apps, banking software, trading platforms
+
+standards_packs:
+  - owasp-top-10
+  - pci-dss
+  - soc2
+  - supply-chain-security
+
+gate:
+  fail_on:
+    - critical
+    - high
+
+governance:
+  profile: standard
+  human_review_required:
+    on_critical_finding: true

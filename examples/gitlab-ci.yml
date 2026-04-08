@@ -1,0 +1,17 @@
+# Sentrik CI gate for GitLab CI
+# Add this to your .gitlab-ci.yml
+#
+# Runs on merge requests and blocks merge if critical/high findings exist.
+
+sentrik-gate:
+  image: maxgerhardson/sentrik:latest
+  stage: test
+  script:
+    - sentrik gate --git-range "origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME...HEAD"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  artifacts:
+    when: always
+    paths:
+      - out/
+    expire_in: 7 days

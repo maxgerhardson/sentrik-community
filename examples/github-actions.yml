@@ -1,0 +1,34 @@
+# Sentrik CI gate for GitHub Actions
+# Add this to .github/workflows/sentrik.yml
+#
+# Runs on every pull request and blocks merge if critical/high findings exist.
+
+name: Sentrik Gate
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  sentrik-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for git-range diff
+
+      - name: Install Sentrik
+        run: npm install -g sentrik
+
+      - name: Run Sentrik gate
+        run: sentrik gate --git-range "origin/main...HEAD"
+
+      # Optional: upload findings as artifact
+      - name: Upload findings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sentrik-findings
+          path: out/
+          if-no-files-found: ignore

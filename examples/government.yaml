@@ -1,0 +1,26 @@
+# Sentrik config for government / defense contractors
+# Requires: Team license ($29/mo)
+#
+# Covers: NIST 800-53, CMMC, OWASP, supply chain
+# Good for: FedRAMP apps, CUI handling, defense contractors
+
+standards_packs:
+  - owasp-top-10
+  - nist-800-53
+  - cmmc
+  - supply-chain-security
+
+gate:
+  fail_on:
+    - critical
+    - high
+    - medium  # CMMC requires stricter enforcement
+
+governance:
+  profile: strict
+  human_review_required:
+    on_critical_finding: true
+    on_requirement_change: true
+  audit:
+    enabled: true
+    log_file: out/agent_audit.jsonl
