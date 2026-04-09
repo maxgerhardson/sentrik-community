@@ -7,5 +7,5 @@ contact_links:
     url: https://github.com/maxgerhardson/sentrik-community/discussions/new?category=feature-request
     about: Suggest features in Discussions.
   - name: Documentation
-    url: https://maxgerhardson.github.io/sentrik-docs
+    url: https://docs.sentrik.dev
     about: Check the docs for setup, configuration, and API reference.
