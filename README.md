@@ -91,7 +91,7 @@ Plus built-in commands at every tier:
 
 ## CI/CD Integration
 
-### GitHub Actions
+### GitHub Actions (Marketplace)
 
 ```yaml
 # .github/workflows/sentrik.yml
@@ -104,8 +104,28 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - run: npm install -g sentrik
-      - run: sentrik gate --git-range "origin/main...HEAD"
+      - uses: maxgerhardson/sentrik-community@v1
+```
+
+That's it — one line. The action auto-detects PR context, runs the gate, uploads SARIF to GitHub Code Scanning, and attaches the findings report as an artifact.
+
+**With options:**
+
+```yaml
+      - uses: maxgerhardson/sentrik-community@v1
+        with:
+          packs: "owasp-top-10,soc2,supply-chain-security"
+          fail-on: "critical,high"
+          license-key: ${{ secrets.SENTRIK_LICENSE_KEY }}
+```
+
+**Using outputs:**
+
+```yaml
+      - uses: maxgerhardson/sentrik-community@v1
+        id: sentrik
+      - run: echo "Found ${{ steps.sentrik.outputs.findings-count }} findings"
+        if: always()
 ```
 
 ### GitLab CI

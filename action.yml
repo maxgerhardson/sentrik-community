@@ -1,0 +1,145 @@
+name: "Sentrik Gate"
+description: "Enforce compliance, security, and coding standards on every PR. 22 standards packs including OWASP, SOC 2, HIPAA, PCI-DSS, and more."
+author: "Sentrik"
+
+branding:
+  icon: "shield"
+  color: "purple"
+
+inputs:
+  version:
+    description: "Sentrik version to install (default: latest)"
+    required: false
+    default: "latest"
+  args:
+    description: "Additional arguments to pass to sentrik gate"
+    required: false
+    default: ""
+  packs:
+    description: "Comma-separated list of standards packs to enable (overrides project config)"
+    required: false
+    default: ""
+  fail-on:
+    description: "Comma-separated severities that fail the gate (default: critical,high)"
+    required: false
+    default: ""
+  scan-mode:
+    description: "Scan mode: 'pr' for PR diff only, 'full' for entire repo (default: auto-detect)"
+    required: false
+    default: ""
+  upload-sarif:
+    description: "Upload SARIF results to GitHub Code Scanning (default: true)"
+    required: false
+    default: "true"
+  license-key:
+    description: "Sentrik license key for Team/Org packs (use GitHub Secrets)"
+    required: false
+    default: ""
+
+outputs:
+  findings-count:
+    description: "Total number of findings"
+    value: ${{ steps.gate.outputs.findings-count }}
+  critical-count:
+    description: "Number of critical findings"
+    value: ${{ steps.gate.outputs.critical-count }}
+  high-count:
+    description: "Number of high findings"
+    value: ${{ steps.gate.outputs.high-count }}
+  gate-result:
+    description: "Gate result: passed or failed"
+    value: ${{ steps.gate.outputs.gate-result }}
+  report-path:
+    description: "Path to the HTML findings report"
+    value: ${{ steps.gate.outputs.report-path }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Sentrik
+      shell: bash
+      run: |
+        if [ "${{ inputs.version }}" = "latest" ]; then
+          npm install -g sentrik
+        else
+          npm install -g sentrik@${{ inputs.version }}
+        fi
+        echo "Sentrik $(sentrik --version 2>/dev/null || echo 'installed')"
+
+    - name: Configure packs
+      if: inputs.packs != ''
+      shell: bash
+      run: |
+        # Initialize config if it doesn't exist
+        if [ ! -f .sentrik/config.yaml ] && [ ! -f .guard.yaml ]; then
+          sentrik init --no-interactive
+        fi
+        IFS=',' read -ra PACKS <<< "${{ inputs.packs }}"
+        for pack in "${PACKS[@]}"; do
+          pack=$(echo "$pack" | xargs)  # trim whitespace
+          sentrik add-pack "$pack" 2>/dev/null || true
+        done
+
+    - name: Run Sentrik Gate
+      id: gate
+      shell: bash
+      env:
+        GUARD_LICENSE_KEY: ${{ inputs.license-key }}
+        GUARD_GATE_FAIL_ON: ${{ inputs.fail-on }}
+        GITHUB_TOKEN: ${{ github.token }}
+        GUARD_GITHUB_OWNER: ${{ github.repository_owner }}
+        GUARD_GITHUB_REPO: ${{ github.event.repository.name }}
+      run: |
+        # Determine scan mode
+        GATE_ARGS="${{ inputs.args }}"
+        MODE="${{ inputs.scan-mode }}"
+
+        if [ "$MODE" = "pr" ] || ([ -z "$MODE" ] && [ "${{ github.event_name }}" = "pull_request" ]); then
+          GATE_ARGS="--git-range origin/${{ github.base_ref }}...HEAD $GATE_ARGS"
+        fi
+
+        # Run gate and capture exit code
+        set +e
+        sentrik gate $GATE_ARGS 2>&1
+        EXIT_CODE=$?
+        set -e
+
+        # Parse outputs from findings.json if it exists
+        if [ -f out/findings.json ]; then
+          TOTAL=$(python3 -c "import json; d=json.load(open('out/findings.json')); print(len(d.get('findings',d if isinstance(d,list) else [])))" 2>/dev/null || echo "0")
+          CRITICAL=$(python3 -c "import json; d=json.load(open('out/findings.json')); f=d.get('findings',d if isinstance(d,list) else []); print(sum(1 for x in f if x.get('severity','')=='critical'))" 2>/dev/null || echo "0")
+          HIGH=$(python3 -c "import json; d=json.load(open('out/findings.json')); f=d.get('findings',d if isinstance(d,list) else []); print(sum(1 for x in f if x.get('severity','')=='high'))" 2>/dev/null || echo "0")
+        else
+          TOTAL=0
+          CRITICAL=0
+          HIGH=0
+        fi
+
+        echo "findings-count=$TOTAL" >> "$GITHUB_OUTPUT"
+        echo "critical-count=$CRITICAL" >> "$GITHUB_OUTPUT"
+        echo "high-count=$HIGH" >> "$GITHUB_OUTPUT"
+        echo "report-path=out/findings.html" >> "$GITHUB_OUTPUT"
+
+        if [ $EXIT_CODE -eq 0 ]; then
+          echo "gate-result=passed" >> "$GITHUB_OUTPUT"
+        else
+          echo "gate-result=failed" >> "$GITHUB_OUTPUT"
+        fi
+
+        exit $EXIT_CODE
+
+    - name: Upload SARIF to Code Scanning
+      if: always() && inputs.upload-sarif == 'true'
+      uses: github/codeql-action/upload-sarif@v3
+      continue-on-error: true
+      with:
+        sarif_file: out/findings.sarif
+
+    - name: Upload findings report
+      if: always()
+      uses: actions/upload-artifact@v4
+      continue-on-error: true
+      with:
+        name: sentrik-report
+        path: out/
+        if-no-files-found: ignore
