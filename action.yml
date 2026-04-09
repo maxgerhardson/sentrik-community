@@ -1,5 +1,5 @@
 name: "Sentrik Gate"
-description: "Enforce compliance, security, and coding standards on every PR. 22 standards packs including OWASP, SOC 2, HIPAA, PCI-DSS, and more."
+description: "Enforce compliance and security standards on every PR with 22 standards packs and 526 rules."
 author: "Sentrik"
 
 branding:
