@@ -52,7 +52,7 @@ sentrik dashboard
 
 ## Free Tier (forever, no credit card)
 
-Sentrik includes **5 standards packs** with **158 rules** for free:
+Sentrik includes **6 standards packs** with **193 rules** for free:
 
 | Pack | Rules | What it catches |
 |------|-------|-----------------|
@@ -61,6 +61,7 @@ Sentrik includes **5 standards packs** with **158 rules** for free:
 | **Python Security** | 18 | eval/exec, pickle, subprocess, Django/Flask vulns |
 | **Go Security** | 15 | Injection, crypto misuse, unsafe, concurrency bugs |
 | **Supply Chain Security** | 26 | SLSA, SBOM, dependency integrity, AI tool supply chain |
+| **C/C++ Coding Standards** | 35 | Modern C/C++ safety and security practices |
 
 Plus built-in commands at every tier:
 - `sentrik scan` / `sentrik gate` - Scan and enforce
@@ -73,21 +74,21 @@ Plus built-in commands at every tier:
 
 ## Paid Tiers
 
-| | Free | Team ($29/mo) | Organization ($99/mo) |
+| | Free | Team | Organization |
 |---|---|---|---|
-| Standards packs | 5 | 16 | 22 |
-| OWASP, SOC 2, Supply Chain | Yes | Yes | Yes |
+| Standards packs | 6 (193 rules) | 18 (475 rules) | 24 (595 rules) |
+| OWASP, SOC 2, Supply Chain, C/C++ | Yes | Yes | Yes |
 | HIPAA, PCI-DSS, ISO 27001, GDPR | - | Yes | Yes |
-| FDA IEC 62304, NIST, CMMC | - | Yes | Yes |
+| FDA IEC 62304, NIST, CMMC, Cloud IaC | - | Yes | Yes |
 | MISRA-C, DO-178C, ISO 26262 | - | - | Yes |
 | Vulnerability scanning | Yes | Yes | Yes |
 | Dashboard | Yes | Yes | Yes |
 | Work item reconciliation | - | Yes | Yes |
-| Custom rules | - | - | Enterprise |
+| Custom rule packs | 5 | 25 | 100 |
 | Parallel scanning | - | - | Yes |
-| Governance & audit log | - | - | Enterprise |
+| Governance & audit log | - | - | Yes |
 
-[View pricing](https://sentrik.dev/pricing)
+Paid tiers are available by contacting [hello@sentrik.dev](mailto:hello@sentrik.dev) — see [sentrik.dev/pricing](https://sentrik.dev/pricing).
 
 ## CI/CD Integration
 
