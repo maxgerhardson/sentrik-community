@@ -24,15 +24,10 @@ Sentrik is a CLI + dashboard that enforces coding standards, compliance rules, a
 ## Install
 
 ```bash
-# npm (recommended)
-npm install -g sentrik
-
-# pip
 pip install sentrik
-
-# Docker
-docker run maxgerhardson/sentrik scan
 ```
+
+Installing gives you the free tier immediately — 6 standards packs, 193 rules, no license key or sign-up. Paid tiers are activated with a license key from [hello@sentrik.dev](mailto:hello@sentrik.dev).
 
 ## Quick Start
 
@@ -144,7 +139,7 @@ sentrik:
 
 ```yaml
 - script: |
-    npm install -g sentrik
+    pip install sentrik
     sentrik gate --git-range "origin/main...HEAD"
   displayName: Sentrik Gate
 ```
